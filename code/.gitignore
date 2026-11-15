@@ -1,0 +1,12 @@
+.venv/
+cache/
+__pycache__/
+*.pyc
+*.egg-info/
+# セットアップが置くもの (uv 本体・Python・インストール記録)
+tools/uv/
+tools/python/
+tools/install_info.json
+# exe ビルドの出力
+build/
+dist/

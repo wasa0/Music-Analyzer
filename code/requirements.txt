@@ -1,0 +1,4 @@
+# 依存ライブラリは pyproject.toml に版を固定して書いてある。
+# 通常は setup_windows.bat / setup.sh (tools/install.py) を使う。手動で入れる場合はプロジェクトのフォルダで:
+#   pip install -r requirements.txt
+-e .

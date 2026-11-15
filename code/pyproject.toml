@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "musica-ex"
+version = "0.2.0"
+description = "歌声の調教特徴量解析 (楽器分離・コード認識つき) とオーディオビジュアライザー"
+requires-python = ">=3.11"
+# 動作確認した版に固定 (セットアップは tools/install.py が行う)
+dependencies = [
+    "yt-dlp[default]==2026.8.19",
+    "deno==2.9.7",
+    "PySide6-Essentials==6.12.0",
+    "PySide6-Addons==6.12.0",
+    "pyqtgraph==0.14.0",
+    "librosa==1.0.0",
+    "soundfile==0.14.0",
+    "soxr==1.1.0",
+    "imageio-ffmpeg==0.6.0",
+    "scipy==1.18.1",
+    "numpy==2.5.4",
+]
+
+[project.optional-dependencies]
+# Demucs (高品質な音源分離)。PyTorch は GPU に合った版を tools/install.py が選んで入れる
+demucs = ["demucs==4.0.1", "torch==2.14.1", "torchaudio==2.11.0"]
+# 実行ファイル (exe) を作るとき用
+build = ["pyinstaller==6.22.3", "pyinstaller-hooks-contrib==2026.8"]
+
+# Windows では .venv\Scripts\ に musica-ex.exe (統合版: アナライザー + ビジュアライザーのタブ) と
+# 単体版の musica-analyzer.exe / musica-visualizer.exe (いずれもコンソール無し) ができる
+[project.gui-scripts]
+musica-ex = "musica.app:integrated_main"
+musica-analyzer = "musica.app:analyzer_main"
+musica-visualizer = "musica.app:visualizer_main"
+
+[project.scripts]
+musica-selftest = "musica.app:selftest_main"
+
+[tool.setuptools.packages.find]
+include = ["musica*"]

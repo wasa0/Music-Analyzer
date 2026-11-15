@@ -1,0 +1,49 @@
+# Windows 用の実行ファイル版 (zip) を GitHub 上で作る。
+#   - Actions タブ → build-windows → Run workflow (種類を選べる)
+#   - v で始まるタグ (例: v0.2.0) を push したときは lite と cpu を自動で作る
+# 出来上がった zip は実行結果ページの Artifacts からダウンロードできる。
+name: build-windows
+
+on:
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: "lite = Demucs なし / cpu = Demucs + CPU / cu130 = Demucs + NVIDIA GPU (約 3GB)"
+        type: choice
+        options: [lite, cpu, cu130]
+        default: lite
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.variant)) || fromJSON('["lite","cpu"]') }}
+    env:
+      PYTHONUTF8: "1"
+      MUSICA_NO_PAUSE: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Install uv
+        shell: pwsh
+        run: python -m pip install --disable-pip-version-check "uv==0.12.21"
+
+      - name: Build (${{ matrix.variant }})
+        shell: pwsh
+        run: uv run --no-project --managed-python --python 3.12 tools/build_exe.py --variant ${{ matrix.variant }} --zip
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: MUSICA_EX-windows-${{ matrix.variant }}
+          path: dist/${{ matrix.variant }}/*.zip
+          compression-level: 0
+          retention-days: 14
+          if-no-files-found: error

@@ -1,0 +1,9 @@
+# Demucs (高品質な音源分離) を手動で入れる場合用。通常は tools/install.py が GPU に合わせて自動で選ぶ。
+# 下の cu130 は NVIDIA ドライバ 580 以降 + RTX 20 シリーズ以降向け。
+#   古いドライバ / GTX 10 シリーズ以前: cu130 を cu126 に置き換える
+#   GPU なし: cu130 を cpu に置き換える
+#   macOS: --extra-index-url の行を消し、+cu130 を外す
+--extra-index-url https://download.pytorch.org/whl/cu130
+torch==2.14.1+cu130
+torchaudio==2.11.0+cu130
+demucs==4.0.1

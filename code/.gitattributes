@@ -1,0 +1,6 @@
+# Windows のバッチファイルは CRLF でないと cmd.exe が goto のラベルを見失うことがある
+*.bat text eol=crlf
+*.sh text eol=lf
+*.py text eol=lf
+*.ico binary
+*.png binary
